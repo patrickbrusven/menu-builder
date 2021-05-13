@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-// require('dotenv/config');
 require('dotenv').config();
 
 const uri = process.env.DB_CONNECTION;
@@ -22,6 +21,7 @@ mongoose.connect(uri, {
 
 // routes
 const menu = require('./routes/menuAPI.js');
+const authRoute = require('./routes/Authorization.js');
 
 const app = express();
 
@@ -30,6 +30,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api/menu', menu);
+app.use('/api/user', authRoute);
 
 
 
