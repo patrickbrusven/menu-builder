@@ -2,10 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-require('dotenv/config');
+// require('dotenv/config');
+require('dotenv').config();
+
+const uri = process.env.DB_CONNECTION;
 
 // connect to db
-mongoose.connect(process.env.DB_CONNECTION, {
+mongoose.connect(uri, {
   useUnifiedTopology: true,
   useFindAndModify: false,
   useNewUrlParser: true

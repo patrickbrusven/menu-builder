@@ -1,5 +1,13 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>welcome to Version 1.0 Menu Builder App</h1>
   </div>
 </template>
+
+<script>
+
+export default {
+  name: 'About',
+}
+
+</script>
