@@ -1,54 +1,37 @@
 <template lang="html">
   <AddItemComponent @create-item="createItem"/>
-  <DisplayMenuComponent @delete-item="deleteItem"
-                @reset-dom="resetDOM"
-                :Menu='menu' />
+  <DisplayMenuComponent />
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import MenuService from '@/menuService.js'
-import DisplayMenuComponent from '@/components/dashboard/DisplayMenuComponent.vue'
 import AddItemComponent from '@/components/dashboard/AddItemComponent.vue'
-
+import DisplayMenuComponent from '@/components/dashboard/DisplayMenuComponent.vue'
 
 export default {
   name: 'Dashboard',
 
   components: {
+    AddItemComponent,
     DisplayMenuComponent,
-    AddItemComponent
-  },
-
-  data() {
-    return {
-      menu: [],
-    }
-  },
-
-  async created() {
-    try {
-      this.menu = await MenuService.getMenu();
-    } catch(err) {
-      this.error = err.message;
-    }
   },
 
   methods: {
+    ...mapActions([
+      'fetchMenu'
+    ]),
+
     async deleteItem(id) {
       await MenuService.deleteMenuItem(id);
-      this.menu = await MenuService.getMenu();
+      await this.fetchMenu();
     },
 
     async createItem(newItem) {
       await MenuService.insertMenuItem(newItem.title, newItem.description, newItem.price, newItem.categorie);
-      this.menu = await MenuService.getMenu();
+      await this.fetchMenu();
     },
-
-    async resetDOM() {
-      this.menu = await MenuService.getMenu();
-    },
-  }
-
+  },
 }
 </script>
 

@@ -1,27 +1,38 @@
 <template lang="html">
-  <li v-for="menuItem in Menu"
-      v-bind:key="menuItem._id">
-      <DisplayItemComponent @delete-item="$emit('delete-item', menuItem._id)"
-                    @reset-dom="$emit('reset-dom')"
-                    :item="menuItem" />
-  </li>
+  <DisplayItemComponent @edit-item="editItem" />
+  <UpdateItemComponent @toggle-show="toggleShow" v-if="showEditItem" :menuItemID="menuItemID" />
 </template>
 
 <script>
 import DisplayItemComponent from '@/components/dashboard/DisplayItemComponent.vue'
+import UpdateItemComponent from '@/components/dashboard/UpdateItemComponent.vue'
 
 export default {
   name: 'DisplayMenuComponent',
 
+
   components: {
     DisplayItemComponent,
+    UpdateItemComponent,
   },
 
-  props: {
-    Menu: Array
+  data() {
+    return {
+      showEditItem: false,
+      menuItemID: '',
+    }
   },
 
-  emits: ['delete-item', 'reset-dom'],
+  methods: {
+    async editItem(itemToUpdate) {
+      this.menuItemID = itemToUpdate;
+      this.showEditItem = !this.showEditItem;
+    },
+
+    toggleShow() {
+      this.showEditItem = !this.showEditItem;
+    },
+  },
 }
 </script>
 

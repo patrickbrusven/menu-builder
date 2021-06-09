@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import MenuService from  '@/menuService.js'
 
 export default {
@@ -42,14 +43,18 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'fetchMenu'
+    ]),
+
     async submitUpdate() {
       await MenuService.updateMenuItem(this.menuItemID, this.title, this.description, this.price, this.categorie)
       this.$emit('toggle-show')
-      this.$emit('reset-dom')
+      await this.fetchMenu();
     }
   },
 
-  emits: ['toggle-show', 'reset-dom']
+  emits: ['toggle-show']
 }
 </script>
 

@@ -1,51 +1,40 @@
 <template>
   <div class="container">
-    <p class="title">{{ item.title }}</p>
-    <p class="description">{{ item.description }}</p>
-    <p class="price">{{ item.price }}</p>
-    <p class="categorie">{{ item.categorie }}</p>
-    <button @click="$emit('delete-item', item._id)">Remove</button>
-    <button @click="onClick(item._id)">Edit</button>
-    <div v-show="showEditItem">
-      <UpdateItemComponent  @reset-dom="$emit('reset-dom')" @toggle-show="toggleshow()" v-if="showEditItem" :menuItemID="menuItemID" />
-    </div>
+    <li v-for="item in $store.state.menu"
+        v-bind:key="item._id">
+      <p class="title">{{ item.title }}</p>
+      <p class="description">{{ item.description }}</p>
+      <p class="price">{{ item.price }}</p>
+      <p class="categorie">{{ item.categorie }}</p>
+      <button @click="deleteItem(item._id)">Remove</button>
+      <button @click="$emit('edit-item', item._id)">Edit</button>
+    </li>
   </div>
 </template>
 
 <script>
-import UpdateItemComponent from '@/components/dashboard/UpdateItemComponent.vue'
+import { mapActions } from 'vuex'
+import MenuService from '@/menuService.js'
 
 export default {
   name: 'DisplayItemComponent',
 
-  data() {
-    return {
-      showEditItem: false,
-      menuItemID: '',
-    }
-  },
-
-  components: {
-    UpdateItemComponent,
-  },
-
-  props: {
-    item: Object,
-  },
-
   methods: {
+    ...mapActions([
+      'fetchMenu'
+    ]),
 
-    async onClick(id) {
-      this.showEditItem = !this.showEditItem;
-      this.menuItemID = id;
+    async deleteItem(id) {
+      await MenuService.deleteMenuItem(id);
+      await this.fetchMenu();
     },
-
-    toggleshow() {
-      this.showEditItem = !this.showEditItem;
-    }
   },
 
-  emits: ['delete-item', 'reset-dom']
+  created() {
+    this.fetchMenu();
+  },
+
+  emits: ['edit-item']
 }
 </script>
 
