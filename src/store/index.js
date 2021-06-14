@@ -20,26 +20,15 @@ export default createStore({
         userData.token
         }`
     },
+
     LOGOUT () {
       localStorage.removeItem('user')
       location.reload()
     },
+
     SET_MENU (state, menu) {
       state.menu = menu;
     },
-
-    PAGE_REFRESH (state, userData) {
-        state.token = userData
-        localStorage.setItem('user', JSON.stringify(userData))
-        axios.defaults.headers.common['auth-token'] = `${
-          userData
-          }`
-        const user = UserService.getUser(userData);
-        state.user = user;
-        state.loggedIn = true;
-    },
-
-
   },
   actions: {
     register ({ commit }, credentials) {
@@ -69,11 +58,11 @@ export default createStore({
       commit('SET_MENU', menu);
     },
 
-    async pageRefresh ({ commit }, token) {
-      const user = await UserService.getUser(token);
-      console.log(user);
-      commit('SET_USER_DATA', user);
-      // this.fetchMenu;
+    async pageRefresh ({ commit }) {
+      const userString = localStorage.getItem('user')
+      const token = JSON.parse(userString)
+      const { data } = await UserService.getUser(token);
+      commit('SET_USER_DATA', data);
     },
   },
   getters: {

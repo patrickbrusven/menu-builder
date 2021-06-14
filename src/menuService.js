@@ -5,7 +5,6 @@ const url = 'http://localhost:5000/api/menu/';
 class MenuService {
   static async getMenu() {
     const { data } = await axios.get(url)
-    console.log(data)
     return data;
   }
    // return new Promise ((resolve,reject) => {

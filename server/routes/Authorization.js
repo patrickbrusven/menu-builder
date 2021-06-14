@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../models/User');
+const User = require('../models/User.js');
 const jwt = require('jsonwebtoken');
 const { registerValidation, loginValidation } = require('../validation.js');
 const bcrypt = require('bcryptjs');
@@ -8,15 +8,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 router.get('/:token', async (req, res) => {
-  const user = await User.findOne({token: req.body.token});
-  // create and asign an jsonwebtoken
-
   try {
-    const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET)
-    user.token = token
-
-    await user.save();
-    res.header('auth-token', user.token).send(user);
+    const user = await User.findOne({token: req.params.token});
+    // console.log(user);
+    res.send(user);
   } catch(err) {
     res.status(400).send(err);
   }
