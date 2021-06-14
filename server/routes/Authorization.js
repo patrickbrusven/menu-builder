@@ -7,7 +7,20 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+router.get('/:token', async (req, res) => {
+  const user = await User.findOne({token: req.body.token});
+  // create and asign an jsonwebtoken
 
+  try {
+    const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET)
+    user.token = token
+
+    await user.save();
+    res.header('auth-token', user.token).send(user);
+  } catch(err) {
+    res.status(400).send(err);
+  }
+});
 
 // register route
 router.post('/register', async (req, res) => {
@@ -55,11 +68,16 @@ router.post('/login', async (req, res) => {
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if(!validPass) return res.status(400).send('Invalid password')
 
+  // create and asign an jsonwebtoken
+  const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET)
+  user.token = token
+
+  await user.save();
+
 
   try {
-    // create and asign an jsonwebtoken
-    const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET)
-    res.header('auth-token', token).send(token);
+
+    res.header('auth-token', user.token).send(user);
   } catch(err) {
     res.status(400).send(err);
   }

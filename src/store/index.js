@@ -1,22 +1,45 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import MenuService from '@/menuService.js'
+import UserService from '@/userService.js'
 
 export default createStore({
   state: {
-    user: null
+    loggedIn: false,
+    user: null,
+    menu: [],
+    token: null,
+    showAddItem: false,
   },
   mutations: {
     SET_USER_DATA (state, userData) {
+      state.loggedIn = true
       state.user = userData
-      localStorage.setItem('user', JSON.stringify(userData))
+      localStorage.setItem('user', JSON.stringify(userData.token))
       axios.defaults.headers.common['auth-token'] = `${
-        userData
+        userData.token
         }`
     },
     LOGOUT () {
       localStorage.removeItem('user')
       location.reload()
     },
+    SET_MENU (state, menu) {
+      state.menu = menu;
+    },
+
+    PAGE_REFRESH (state, userData) {
+        state.token = userData
+        localStorage.setItem('user', JSON.stringify(userData))
+        axios.defaults.headers.common['auth-token'] = `${
+          userData
+          }`
+        const user = UserService.getUser(userData);
+        state.user = user;
+        state.loggedIn = true;
+    },
+
+
   },
   actions: {
     register ({ commit }, credentials) {
@@ -28,7 +51,8 @@ export default createStore({
         })
     },
 
-    login ({ commit }, credentials) {
+    async login ({ commit }, credentials) {
+      await this.fetchMenu;
       return axios
         .post('//localhost:5000/api/user/login', credentials)
         .then(({ data }) => {
@@ -39,10 +63,26 @@ export default createStore({
     logout ({ commit }) {
       commit('LOGOUT')
     },
+
+    async fetchMenu ({ commit }) {
+      const menu = await MenuService.getMenu();
+      commit('SET_MENU', menu);
+    },
+
+    async pageRefresh ({ commit }, token) {
+      const user = await UserService.getUser(token);
+      console.log(user);
+      commit('SET_USER_DATA', user);
+      // this.fetchMenu;
+    },
   },
   getters: {
     loggedIn (state) {
-      return !!state.user
+      return !!state.loggedIn
+    },
+
+    menuUserKey (state) {
+      return state.user._id + state.user.menu
     }
   },
   modules: {

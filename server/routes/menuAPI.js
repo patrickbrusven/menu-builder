@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const verify = require('../verifyToken.js');
+// const verify = require('../verifyToken.js');
 
 let MenuItemModel = require('../models/menuItem.js');
 
@@ -14,7 +14,7 @@ function asyncHandler(cb){
   };
 }
 
-router.get('/', verify, asyncHandler( async (req, res) => {
+router.get('/', asyncHandler( async (req, res) => {
   const menu = await MenuItemModel.find()
   res.json(menu);
 }));
