@@ -1,23 +1,35 @@
 <template>
   <div class="container">
-    <li v-for="item in $store.state.menu"
+    <li class="item" v-for="item in $store.state.menu"
         v-bind:key="item._id">
-      <p class="title">{{ item.title }}</p>
+      <h3 class="title">{{ item.title }}</h3>
       <p class="description">{{ item.description }}</p>
-      <p class="price">{{ item.price }}</p>
+      <h4 class="price">${{ item.price }}</h4>
       <p class="categorie">{{ item.categorie }}</p>
-      <button @click="deleteItem(item._id)">Remove</button>
-      <button @click="$emit('edit-item', item._id)">Edit</button>
+      <div class="hide">
+        <Button class="liButton" @click="deleteItem(item._id)"
+                color="red"
+                text="Remove"/>
+        <Button class="liButton" @click="$emit('edit-item', item._id)"
+                color="green"
+                text="Edit"/>
+      </div>
     </li>
+
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import MenuService from '@/menuService.js'
+import Button from '@/components/Button.vue'
 
 export default {
   name: 'DisplayItemComponent',
+
+  components: {
+    Button,
+  },
 
   methods: {
     ...mapActions([
@@ -39,5 +51,49 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+li {
+  list-style: none;
+  position: relative;
+  border-radius: 5px;
+  margin: 5px;
+
+  width: 95%;
+}
+
+.liButton {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  background-color: #167afbcc;
+  opacity: .7;
+  transition: .2s ease-in;
+}
+
+.liButton:hover {
+  opacity: 1;
+}
+
+.hide {
+  opacity: 0;
+  transition: .3s;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
+.item:hover > .hide {
+  opacity: 1;
+}
 
 </style>
