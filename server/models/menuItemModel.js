@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-let menuItemSchema = new Schema({
+const menuItemSchema = new mongoose.Schema({
   categorie: {
     type: String
   },
@@ -39,7 +39,7 @@ let menuItemSchema = new Schema({
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'collectionUser'
+    ref: 'collectionMenu'
   }
 });
 

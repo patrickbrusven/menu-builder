@@ -8,18 +8,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  menus: [{
-    type: String,
-    default: '',
-  }],
   role: {
     type: String,
     default: 'admin'
   },
-  menuItems: [{
+  menus: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'collectionMenuItem'
-  }]
+    default: 'collectionMenu'
+  }],
 });
 
 const User = mongoose.model('collectionUser', userSchema);
