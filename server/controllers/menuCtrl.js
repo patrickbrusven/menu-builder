@@ -33,22 +33,25 @@ module.exports = {
 
   removeMenu: asyncHandler( async (req, res, next) => {
     const { menuId } = req.params;
-    const menu = Menu.findById(menuId);
+    const menu = await Menu.findById(menuId);
     if (!menu) {
       return res.status(400).json( {error: 'Menu does not exist'} )
     }
+    if (menu.menuItems) {
+      await MenuItem.deleteMany({ owner: menuId });
+    }
     const userId = menu.owner;
     const user = await User.findById(userId);
-    await menu.remove();
-
     user.menus.pull(menu);
     await user.save();
-    res.status(200).json({ success: true });
+    const deleted = await Menu.findByIdAndDelete(menuId)
+
+    res.status(200).json(deleted);
   }),
 
   getMenuItems: asyncHandler( async (req, res, next) => {
     const { menuId } = req.params;
-    const menu = await Menu.findById(menuId).populate('menuitems');
+    const menu = await Menu.findById(menuId).populate('menuItems');
     res.status(200).json(menu.menuItems);
   }),
 
@@ -58,7 +61,7 @@ module.exports = {
     const menu = await Menu.findById(menuId);
     newMenuItem.owner = menu;
     await newMenuItem.save();
-    menu.menuItems.push(newMenu);
+    menu.menuItems.push(newMenuItem);
     await menu.save()
     res.status(201).json(newMenuItem);
   }),
@@ -78,16 +81,15 @@ module.exports = {
 
   removeMenuItem: asyncHandler( async (req, res, next) => {
     const { menuItemId } = req.params;
-    const menuItem = MenuItem.findById(menuItemId);
+    const menuItem = await MenuItem.findById(menuItemId);
     if (!menuItem) {
       return res.status(400).json( {error: 'Menu Item does not exist'} )
     }
-    const menuId = menu.owner;
+    const menuId = menuItem.owner;
     const menu = await Menu.findById(menuId);
-    await menuItem.remove();
-
     menu.menuItems.pull(menuItem);
     await menu.save();
-    res.status(200).json({ success: true });
+    const deleted = await MenuItem.findByIdAndDelete(menuItemId)
+    res.status(200).json(deleted);
   }),
 };

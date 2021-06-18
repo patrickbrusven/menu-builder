@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   menus: [{
     type: mongoose.Schema.Types.ObjectId,
-    default: 'collectionMenu'
+    ref: 'collectionMenu'
   }],
 });
 

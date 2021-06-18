@@ -47,9 +47,16 @@ module.exports = {
 
   deleteUser: asyncHandler( async (req, res, next) => {
     const { userId } = req.params;
-    const result = await User.findByIdAndRemove(userId);
-    // not sure what end does, cannot seem to have any json returned?
-    res.status(201).end();
+    const user = await User.findById(userId);
+    if (user.menus) {
+      for( i = 0; i < user.menus.length; i++) {
+        const menuId = user.menus[i];
+        await MenuItem.deleteMany({ owner: menuId });
+        await Menu.findByIdAndDelete(menuId);
+      }
+    }
+    const deleted = await User.findByIdAndDelete(userId);
+    res.status(200).json(deleted);
   }),
 
   getUsersMenus: asyncHandler(async (req, res, next) => {
@@ -68,24 +75,4 @@ module.exports = {
     await user.save()
     res.status(201).json(newMenu);
   }),
-
-  // below could be reworked to utilize just a menu route
-
-  // getUsersMenu: asyncHandler(async (req, res, next) => {
-  //   const { menuId } = req.params;
-  //   const menu = await Menu.findById(menuId);
-  //   res.status(200).json(menu);
-  // }),
-  //
-  // newMenusMenuItem: asyncHandler(async (req, res, next) => {
-  //   const { menuId } = req.params;
-  //   const newMenuItem =  new MenuItem(req.body);
-  //   const menu = await Menu.findById(menuId);
-  //   newMenuItem.owner = menu;
-  //   await newMenuItem.save();
-  //   menu.menuItems.push(newMenuItem);
-  //   await menu.save()
-  //   res.status(201).json(newMenuItem);
-  // }),
-
 };
