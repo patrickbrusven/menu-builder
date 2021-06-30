@@ -2,6 +2,8 @@
     <form class="loginForm" @submit.prevent="login">
       <input v-model="email" type="email" name="email" placeholder="Email...">
       <input v-model="password" type="password" name="password" placeholder="Password...">
+      <ErrorComponent v-if="$store.state.error"
+                      text="Error Logging in..." />
       <div class="bottomLine">
         <router-link to="/register">
         Don't have an account? Register.
@@ -14,22 +16,37 @@
 </template>
 
 <script>
+import ErrorComponent from '@/components/Error.vue'
 
 export default {
+  components: {
+    ErrorComponent,
+  },
+
   data () {
     return {
       email: '',
       password: ''
     }
   },
+
   methods: {
     login () {
+      if (this.$store.state.error) {
+        this.$store.state.error = !this.$store.state.error;
+        this.$store.state.error = '';
+      }
       this.$store
         .dispatch('login', {
           email: this.email,
           password: this.password
+        }).then(() => {
+          if (this.$store.state.error) {
+            return
+          } else {
+            this.$router.push({ name: 'dashboard' })
+          }
         })
-        .then(() => { this.$router.push({ name: 'dashboard' }) })
     }
   },
 }

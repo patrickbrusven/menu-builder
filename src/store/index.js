@@ -6,6 +6,8 @@ import RefreshUserService from '@/refreshUserService.js'
 
 export default createStore({
   state: {
+    error: false,
+    errorMessage: '',
     loggedIn: false,
     user: null,
     menus: null,
@@ -17,6 +19,10 @@ export default createStore({
     showEditItem: false,
   },
   mutations: {
+    SET_ERROR_DATA (state, errorData) {
+      state.error = !state.error
+      state.errorMessage = errorData
+    },
     SET_USERS_MENUS (state, menusData) {
       state.menus = menusData
     },
@@ -68,11 +74,13 @@ export default createStore({
     // },
 
     async login ({ commit }, credentials) {
-      // await this.fetchMenu;
       return axios
         .post('//localhost:5000/api/login', credentials)
         .then(({ data }) => {
           commit('SET_USER_DATA', data)
+        })
+        .catch(({ response }) => {
+          commit('SET_ERROR_DATA', response.data)
         })
     },
 

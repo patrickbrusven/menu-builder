@@ -30,6 +30,8 @@ module.exports = {
 
   loginUser: asyncHandler( async(req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
+    if(!user) return res.status(400).send("Email dosen't exist");
+
     const clientPassword = req.body.password;
     if (user.password != clientPassword) {
       return res.status(400).send('Invalid password')
