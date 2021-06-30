@@ -35,8 +35,11 @@ app.use(cors());
 // routes
 const menusRoute = require('./routes/menuRte.js');
 const usersRoute = require('./routes/userRte.js');
+const authRoute = require('./routes/authorizationRte.js');
 app.use('/api/menus', menusRoute);
 app.use('/api/users', usersRoute);
+app.use('/api', authRoute);
+
 
 // Error handling middle ware
 app.use((req, res, next) => {

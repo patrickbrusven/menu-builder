@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="menuDisplay">
     <DisplayItemComponent @edit-item="editItem" />
-    <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="showEditItem" :menuItemID="menuItemID" />
+    <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="$store.state.showEditItem" :menuItemId="menuItemId" />
   </div>
 </template>
 
@@ -21,13 +21,13 @@ export default {
   data() {
     return {
       showEditItem: false,
-      menuItemID: '',
+      menuItemId: '',
     }
   },
 
   methods: {
-    async editItem(itemToUpdate) {
-      this.menuItemID = itemToUpdate;
+    editItem(menuItemId) {
+      this.menuItemId = menuItemId;
       this.showEditItem = !this.showEditItem;
 
       if(this.$store.state.showAddItem) {

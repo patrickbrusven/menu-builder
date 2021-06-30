@@ -27,23 +27,22 @@ export default {
 
   methods: {
     createNewItem() {
-      const newItem = {
-        title: this.title,
-        description: this.description,
-        price: this.price,
-        categorie: this.categorie,
-      }
-
-      this.$emit('create-item', newItem)
+      this.$store.
+        dispatch('newMenuItem', {
+          title: this.title,
+          description: this.description,
+          price: this.price,
+          categorie: this.categorie,
+          })
 
       this.title = ''
       this.description = ''
       this.price = ''
       this.categorie = ''
+
+      this.$store.state.showAddItem = !this.$store.state.showAddItem;
     }
   },
-
-  emits: ['create-item']
 }
 </script>
 

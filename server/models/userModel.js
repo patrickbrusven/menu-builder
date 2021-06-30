@@ -12,10 +12,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'admin'
   },
+  token: {
+    type: String,
+    default: '',
+  },
   menus: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'collectionMenu'
-  }],
+  }]
 });
 
 const User = mongoose.model('collectionUser', userSchema);

@@ -5,18 +5,15 @@
     <img class="landingPageLogo" src="@/assets/logo.png" alt="main logo">
     <router-view/>
   </div>
-  <!-- <StateWatcher /> -->
 </template>
 
 <script>
 import Navigation from '@/components/Navigation.vue'
-// import StateWatcher from '@/components/StateWatcher.vue'
 
 export default {
 
   components: {
     Navigation,
-    // StateWatcher,
   },
 
   watch: {

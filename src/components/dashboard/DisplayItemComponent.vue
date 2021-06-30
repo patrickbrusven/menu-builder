@@ -1,16 +1,16 @@
 <template>
-  <div class="container">
-    <li class="item" v-for="item in $store.state.menu"
+  <div v-if="$store.state.menuItems" class="container">
+    <li class="item" v-for="item in $store.state.menuItems"
         v-bind:key="item._id">
       <h3 class="title">{{ item.title }}</h3>
       <p class="description">{{ item.description }}</p>
       <h4 class="price">${{ item.price }}</h4>
       <p class="categorie">{{ item.categorie }}</p>
       <div class="hide">
-        <Button class="liButton" @click="deleteItem(item._id)"
+        <Button class="liButton" @click="removeMenuItem(item._id)"
                 color="red"
                 text="Remove"/>
-        <Button class="liButton" @click="$emit('edit-item', item._id)"
+        <Button class="liButton" @click="getMenuItem(item._id)"
                 color="green"
                 text="Edit"/>
       </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 import MenuService from '@/menuService.js'
 import Button from '@/components/Button.vue'
 
@@ -32,19 +32,30 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'fetchMenu'
-    ]),
+    // ...mapActions([
+    //   'fetchMenu'
+    // ]),
 
     async deleteItem(id) {
       await MenuService.deleteMenuItem(id);
       await this.fetchMenu();
     },
+
+    removeMenuItem(menuItemId) {
+      this.$store.
+        dispatch('removeMenuItem', menuItemId);
+    },
+
+    async getMenuItem(menuItemId) {
+      await this.$store.
+        dispatch('getMenuItem', menuItemId);
+        this.$store.state.showEditItem = !this.$store.state.showEditItem
+    }
   },
 
-  created() {
-    this.fetchMenu();
-  },
+  // created() {
+  //   this.fetchMenu();
+  // },
 
   emits: ['edit-item']
 }

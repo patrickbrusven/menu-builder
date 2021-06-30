@@ -75,7 +75,7 @@ module.exports = {
   updateMenuItem: asyncHandler(async (req, res, next) => {
     const { menuItemId } = req.params;
     const newMenuItem = req.body;
-    const menuItem = await MenuItem.findByIdAndUpdate(menuItemId, newMenu);
+    const menuItem = await MenuItem.findByIdAndUpdate(menuItemId, newMenuItem);
     res.status(201).json(menuItem);
   }),
 

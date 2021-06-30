@@ -1,54 +1,39 @@
 import axios from 'axios';
 
-const url = 'http://localhost:5000/api/menu/';
+const url = 'http://localhost:5000/api/menus/';
 
 class MenuService {
-  static async getMenu() {
-    const { data } = await axios.get(url)
-    return data;
-  }
-   // return new Promise ((resolve,reject) => {
-   //    axios.get(url).then((res) => {
-   //      const data = res.data;
-   //      resolve(
-   //        data.map(item => ({
-   //          ...item,
-   //          createdAt: ''
-   //        }))
-   //      );
-   //
-   //    })
-   //     .catch((err)=> {
-   //         reject(err);
-   //     })
-   //   });
-   // }
-
-  static getMenuitem(id) {
-    return axios.get(`${url}${id}`);
+  static getMenu(menuId) {
+    return axios.get(`${url}${menuId}`);
   }
 
- static updateMenuItem(id, title, description, price, categorie) {
-   return axios.put(`${url}${id}`, {
-     title,
-     description,
-     price,
-     categorie
-   });
- }
+  static updateMenu(menuId, updatedMenu) {
+    return axios.patch(`${url}${menuId}`, updatedMenu)
+  }
 
- static insertMenuItem(title, description, price, categorie) {
-   return axios.post(url, {
-     title,
-     description,
-     price,
-     categorie
-   });
- }
+  static removeMenu(menuId) {
+    return axios.delete(`${url}${menuId}`);
+  }
 
- static deleteMenuItem(id) {
-   return axios.delete(`${url}${id}`);
- }
+  static getMenuItems(menuId) {
+    return axios.get(`${url}${menuId}/menuitems`);
+  }
+
+  static newMenuItem(menuId, newItem) {
+    return axios.post(`${url}${menuId}/menuitems`, newItem);
+  }
+
+  static getMenuItem(menuId, menuItemId) {
+    return axios.get(`${url}${menuId}/${menuItemId}`);
+  }
+
+  static updateMenuItem(menuId, menuItemId, updatedItem) {
+    return axios.patch(`${url}${menuId}/${menuItemId}`, updatedItem);
+  }
+
+  static removeMenuItem(menuId, menuItemId) {
+    return axios.delete(`${url}${menuId}/${menuItemId}`);
+  }
 }
 
 export default MenuService;
