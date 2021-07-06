@@ -25,7 +25,7 @@ module.exports = {
     const newUser = new User(req.body);
     newUser.token = 'thisIsAToken';
     const user = await newUser.save()
-    res.status(201).json(user);
+    res.status(201).header('auth-token', user.token).json(user);
   }),
 
   loginUser: asyncHandler( async(req, res, next) => {

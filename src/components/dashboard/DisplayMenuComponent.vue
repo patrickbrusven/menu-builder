@@ -1,7 +1,10 @@
 <template lang="html">
-  <div class="menuDisplay">
+  <div v-if="$store.state.menu" class="menuDisplay">
     <DisplayItemComponent @edit-item="editItem" />
     <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="$store.state.showEditItem" :menuItemId="menuItemId" />
+  </div>
+  <div v-else>
+    <h3> This instead of Menu </h3>
   </div>
 </template>
 

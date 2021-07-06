@@ -59,9 +59,9 @@ module.exports = {
     const { menuId } = req.params;
     const newMenuItem = new MenuItem(req.body);
     const menu = await Menu.findById(menuId);
-    newMenuItem.owner = menu;
+    newMenuItem.owner = menu._id;
     await newMenuItem.save();
-    menu.menuItems.push(newMenuItem);
+    menu.menuItems.push(newMenuItem._id);
     await menu.save()
     res.status(201).json(newMenuItem);
   }),

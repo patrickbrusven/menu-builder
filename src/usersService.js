@@ -29,7 +29,7 @@ class UsersService {
   }
 
   static newUsersMenu(userId, newMenu) {
-    console.log(newMenu)
+    // console.log(newMenu)
     return axios.post(`${url}${userId}/menus`, newMenu);
   }
 

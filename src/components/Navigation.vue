@@ -8,7 +8,7 @@
       <router-link v-if="!loggedIn" to="/register">Register</router-link>
       <router-link v-if="!loggedIn" to="/login">Login</router-link>
       <div v-else class="userStatus">
-        <h3>Welcome back: {{ $store.state.user.userName }}</h3>
+        <h3>Welcome back: {{ $store.state.user.username }}</h3>
         <button type="button" class="logoutButton" @click="logout">Logout</button>
       </div>
     </div>

@@ -67,11 +67,13 @@ module.exports = {
 
   newUsersMenu: asyncHandler(async (req, res, next) => {
     const { userId } = req.params;
-    const newMenu = new Menu(req.body);
     const user = await User.findById(userId);
-    newMenu.owner = user;
+
+    const newMenu = new Menu(req.body);
+
+    newMenu.owner = user._id;
     await newMenu.save();
-    user.menus.push(newMenu);
+    user.menus.push(newMenu._id);
     await user.save()
     res.status(201).json(newMenu);
   }),

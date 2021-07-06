@@ -24,7 +24,7 @@ export default createStore({
       state.errorMessage = errorData
     },
     SET_USERS_MENUS (state, menusData) {
-      state.menus = menusData
+      state.menus = menusData;  
     },
 
     SET_USERS_MENU (state, menuData) {
@@ -58,10 +58,13 @@ export default createStore({
       return axios
         .post('//localhost:5000/api/register', credentials)
         .then(({ data }) => {
-          console.log('user data is', data)
           commit('SET_USER_DATA', data)
         })
+        .catch(({ response }) => {
+          commit('SET_ERROR_DATA', response.data)
+        })
     },
+
 
     // old way
     // async login ({ commit }, credentials) {
