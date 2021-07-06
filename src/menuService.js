@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const url = 'http://localhost:5000/api/menus/';
+// const url = 'http://localhost:5000/api/menus/';
+const url = 'api/menus/';
 
 class MenuService {
   static getMenu(menuId) {

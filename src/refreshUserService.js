@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const url = 'http://localhost:5000/api/';
+// const url = 'http://localhost:5000/api/';
+const url = 'api/';
 
 class RefreshUserService {
   static getUserByToken(token) {

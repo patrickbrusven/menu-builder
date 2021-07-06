@@ -24,7 +24,7 @@ export default createStore({
       state.errorMessage = errorData
     },
     SET_USERS_MENUS (state, menusData) {
-      state.menus = menusData;  
+      state.menus = menusData;
     },
 
     SET_USERS_MENU (state, menuData) {
@@ -56,7 +56,7 @@ export default createStore({
   actions: {
     register ({ commit }, credentials) {
       return axios
-        .post('//localhost:5000/api/register', credentials)
+        .post('api/register', credentials)
         .then(({ data }) => {
           commit('SET_USER_DATA', data)
         })
@@ -78,7 +78,7 @@ export default createStore({
 
     async login ({ commit }, credentials) {
       return axios
-        .post('//localhost:5000/api/login', credentials)
+        .post('api/login', credentials)
         .then(({ data }) => {
           commit('SET_USER_DATA', data)
         })
