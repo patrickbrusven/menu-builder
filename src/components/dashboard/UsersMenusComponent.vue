@@ -1,31 +1,32 @@
 <template lang="html">
   <div class="wrapper">
-    <Button class="addItem" @click="showAddRestaurant()"
-    :color="$store.state.showAddRestaurant ? 'red' : '#0070fc'"
-    :text="$store.state.showAddRestaurant ? 'Close' : 'Add Menu'" />
-    <div v-show="$store.state.showAddRestaurant" class="add-menu">
-      <label>Start a new restaurant</label>
-      <input type="text" id="add-menu" v-model="restaurant" placeholder="restaurant name...">
+    <Button class="addItem" @click="toggleAddMenu()"
+    :color="showAddMenu ? 'red' : '#0070fc'"
+    :text="showAddMenu ? 'Close' : 'Add Menu'" />
+    <div v-show="showAddMenu" class="add-menu">
+      <label>Start a new menu</label>
+      <input type="text" id="add-menu" v-model="menuTitle" placeholder="menu name...">
       <div class="bottomLine">
         <label>Add a new menu</label>
-        <button @click="createNewMenu">Submit</button>
+        <button @click="createNewMenu()">Submit</button>
       </div>
     </div>
   </div>
 
-  <li v-show="$store.state.menus" class="menu" v-for="menu in $store.state.menus"
+  <li v-show="menus" class="menu" v-for="menu in menus"
       v-bind:key="menu._id">
     <h3>{{ menu.restaurant }} </h3>
     <Button class="liButton" @click="chooseMenu(menu._id)"
             color="green"
             text="Edit"/>
-    <Button class="liButton" @click="removeMenu(menu._id)"
+    <Button class="liButton" @click="removeMenu(menu)"
             color="red"
             text="Remove"/>
   </li>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Button from '@/components/Button.vue'
 
 export default {
@@ -37,36 +38,46 @@ export default {
 
   data() {
     return {
-      restaurant: '',
+      menuTitle: '',
     }
+  },
+
+  computed: {
+    ...mapState({
+      showAddMenu: state => state.showAddMenu,
+      menus: state => state.menus,
+      // menu: state => state.menu,
+    })
   },
 
   methods: {
     createNewMenu() {
       this.$store.
       dispatch('addMenu', {
-        restaurant: this.restaurant
+        userId: this.$store.state.user._id,
+        restaurant: this.menuTitle
         })
-      this.restaurant = '';
-      this.showAddRestaurant();
+      this.menuTitle = '';
+      this.toggleAddMenu();
     },
 
     chooseMenu(menuId) {
-      this.$store.dispatch('getMenu', { menuId })
+      this.$store.dispatch('getMenu', menuId)
     },
 
-    removeMenu(menuId) {
-      this.$store.dispatch('removeMenu', { menuId })
+    removeMenu(menu) {
+      this.$store.dispatch('removeMenu', menu)
     },
 
-    showAddRestaurant() {
-      this.$store.state.showAddRestaurant = !this.$store.state.showAddRestaurant;
+    toggleAddMenu() {
+      this.$store.state.showAddMenu = !this.$store.state.showAddMenu;
     },
   },
 
-  created() {
-    this.$store.dispatch('getUsersMenus');
-  },
+  // created() {
+  //   const userId = this.$store.state.user._id;
+  //   this.$store.dispatch('getUsersMenus', userId);
+  // },
 }
 </script>
 

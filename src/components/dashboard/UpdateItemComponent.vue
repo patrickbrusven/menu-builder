@@ -53,6 +53,8 @@ export default {
           description: this.description,
           price: this.price,
           categorie: this.categorie,
+          owner: this.$store.state.menu._id,
+          _id: this.$store.state.menuItem._id,
         });
       this.$store.state.showEditItem = !this.$store.state.showEditItem
     },

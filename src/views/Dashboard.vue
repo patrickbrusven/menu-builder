@@ -2,15 +2,15 @@
   <div class="dashboard">
     <UsersMenusComponent />
     <div class="container">
-      <div v-if="!$store.state.menu" class="">
+      <div v-if="!menu" class="">
         <h3>Choose a menu to edit</h3>
       </div>
       <div v-else class="">
-        <h3>Currently building {{ $store.state.menu.restaurant }}</h3>
-        <Button class="addItem" @click="showAddItem()"
-        :color="$store.state.showAddItem ? 'red' : '#0070fc'"
-        :text="$store.state.showAddItem ? 'Close' : 'Add Item'" />
-        <AddItemComponent v-show="$store.state.showAddItem" class="showAddItem" />
+        <h3>Currently building {{ restaurant }}</h3>
+        <Button class="addItem" @click="toggleAddItem()"
+        :color="showAddItem ? 'red' : '#0070fc'"
+        :text="showAddItem ? 'Close' : 'Add Item'" />
+        <AddItemComponent v-show="showAddItem" class="showAddItem" />
       </div>
     </div>
     <DisplayMenuComponent />
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import UsersMenusComponent from '@/components/dashboard/UsersMenusComponent.vue'
 import AddItemComponent from '@/components/dashboard/AddItemComponent.vue'
 import DisplayMenuComponent from '@/components/dashboard/DisplayMenuComponent.vue'
@@ -39,8 +40,16 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      menu: state => state.menu,
+      restaurant: state => state.menu.restaurant,
+      showAddItem: state => state.showAddItem,
+    })
+  },
+
   methods: {
-    showAddItem() {
+    toggleAddItem() {
       this.$store.state.showAddItem = !this.$store.state.showAddItem;
     },
   },

@@ -14,7 +14,7 @@ export default createStore({
     menu: null,
     menuItems: null,
     menuItem: null,
-    showAddRestaurant: false,
+    showAddMenu: false,
     showAddItem: false,
     showEditItem: false,
   },
@@ -76,11 +76,12 @@ export default createStore({
     //     })
     // },
 
-    async login ({ commit }, credentials) {
+    async login ({ commit, dispatch }, credentials) {
       return axios
         .post('api/login', credentials)
         .then(({ data }) => {
           commit('SET_USER_DATA', data)
+          dispatch('getUsersMenus', data._id)
         })
         .catch(({ response }) => {
           commit('SET_ERROR_DATA', response.data)
@@ -91,65 +92,91 @@ export default createStore({
       commit('LOGOUT')
     },
 
-    async pageRefresh ({ commit }) {
+    // async pageRefresh ({ commit }) {
+    //   const userString = localStorage.getItem('user')
+    //   const token = JSON.parse(userString)
+    //   const { data } = await RefreshUserService.getUserByToken(token);
+    //   data
+    //     .then( res => {
+    //
+    //     })
+    //     .catch( err => {
+    //
+    //     });
+    //
+    //   commit('SET_USER_DATA', data);
+    // },
+
+    async pageRefresh ({ commit, dispatch }) {
       const userString = localStorage.getItem('user')
       const token = JSON.parse(userString)
       const { data } = await RefreshUserService.getUserByToken(token);
+      // console.log(data._id);
       commit('SET_USER_DATA', data);
+      dispatch('getUsersMenus', data._id);
     },
 
-    async addMenu ({ dispatch }, restaurant) {
-      const userId = this.state.user._id
-      await UsersService.newUsersMenu(userId, restaurant);
-      dispatch('getUsersMenus');
+    async addMenu ({ dispatch }, newMenu) {
+      const userId = newMenu.userId
+      await UsersService.newUsersMenu(userId, newMenu);
+      dispatch('getUsersMenus', userId);
     },
 
-    async removeMenu ({ dispatch }, menuId) {
-      await MenuService.removeMenu(menuId.menuId);
-      dispatch('getUsersMenus');
+    async removeMenu ({ dispatch }, menu) {
+      const menuId = menu._id
+      await MenuService.removeMenu(menuId);
+      dispatch('getUsersMenus', menu.owner);
+      dispatch('getUsersMenuItems', menuId);
     },
 
-    async removeMenuItem({ dispatch }, menuItemId) {
-      const menuId = this.state.menu._id
+    async removeMenuItem({ dispatch }, item) {
+      // const menuId = this.state.menu._id
+      const menuId = item.owner
+      const menuItemId = item._id
+
       await MenuService.removeMenuItem(menuId, menuItemId)
-      dispatch('getUsersMenuItems');
+      dispatch('getUsersMenuItems', menuId);
     },
 
-    async getUsersMenus({ commit }) {
-      const userId = this.state.user._id
+    async getUsersMenus({ commit }, userId) {
+      // const userId = this.state.user._id
       const { data } = await UsersService.getUsersMenus(userId);
       commit('SET_USERS_MENUS', data);
     },
 
     async getMenu({ commit, dispatch }, menuId) {
-      const { data } = await MenuService.getMenu(menuId.menuId);
+      const { data } = await MenuService.getMenu(menuId);
       commit('SET_USERS_MENU', data);
-      dispatch('getUsersMenuItems');
+      dispatch('getUsersMenuItems', menuId);
     },
 
     async newMenuItem({ dispatch }, newItem) {
-      const menuId = this.state.menu._id
+      const menuId = newItem.menuId
       await MenuService.newMenuItem(menuId, newItem);
-      dispatch('getUsersMenuItems');
+      dispatch('getUsersMenuItems', menuId);
     },
 
-    async getUsersMenuItems({ commit }) {
-      const menuId = this.state.menu._id
+    async getUsersMenuItems({ commit }, menuId) {
+      // const menuId = this.state.menu._id
       const { data } = await MenuService.getMenuItems(menuId);
       commit('SET_MENU_ITEMS', data);
     },
 
-    async getMenuItem({ commit },  menuItemId) {
-      const menuId = this.state.menu._id
+    async getMenuItem({ commit },  item) {
+      // const menuId = this.state.menu._id
+      const menuId = item.owner
+      const menuItemId = item._id
       const { data } = await MenuService.getMenuItem(menuId, menuItemId);
       commit('SET_MENU_ITEM', data);
     },
 
     async updateMenuItem({ dispatch }, updatedItem) {
-      const menuId = this.state.menu._id
-      const menuItemId = this.state.menuItem._id
+      // const menuId = this.state.menu._id
+      // const menuItemId = this.state.menuItem._id
+      const menuId = updatedItem.owner
+      const menuItemId = updatedItem._id
       await MenuService.updateMenuItem(menuId, menuItemId, updatedItem);
-      dispatch('getUsersMenuItems');
+      dispatch('getUsersMenuItems', menuId);
     }
   },
   getters: {

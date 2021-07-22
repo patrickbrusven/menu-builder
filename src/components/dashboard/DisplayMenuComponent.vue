@@ -1,7 +1,7 @@
 <template lang="html">
-  <div v-if="$store.state.menu" class="menuDisplay">
+  <div v-if="menu" class="menuDisplay">
     <DisplayItemComponent @edit-item="editItem" />
-    <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="$store.state.showEditItem" :menuItemId="menuItemId" />
+    <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="showEditItem" :menuItemId="menuItemId" />
   </div>
   <div v-else>
     <h3> This instead of Menu </h3>
@@ -9,6 +9,7 @@
 </template>
 
 <script>
+// import { mapActions } from 'vuex'
 import DisplayItemComponent from '@/components/dashboard/DisplayItemComponent.vue'
 import UpdateItemComponent from '@/components/dashboard/UpdateItemComponent.vue'
 
@@ -23,8 +24,18 @@ export default {
 
   data() {
     return {
-      showEditItem: false,
+      // showEditItem: false,
       menuItemId: '',
+    }
+  },
+
+  computed: {
+    menu () {
+      return this.$store.state.menu
+    },
+
+    showEditItem () {
+      return this.$store.state.showEditItem
     }
   },
 
@@ -56,9 +67,10 @@ export default {
 }
 
 .centered {
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, -20%);
+  position: absolute;
+  top: 70px;
+  /* left: 50%; */
+  /* transform: translate(-50%, -20%); */
   box-shadow: 0px 0px 13px 4px #868686;
 }
 </style>

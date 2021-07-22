@@ -8,7 +8,7 @@
       <router-link v-if="!loggedIn" to="/register">Register</router-link>
       <router-link v-if="!loggedIn" to="/login">Login</router-link>
       <div v-else class="userStatus">
-        <h3>Welcome back: {{ $store.state.user.username }}</h3>
+        <h3>Welcome back: {{ user.username }}</h3>
         <button type="button" class="logoutButton" @click="logout">Logout</button>
       </div>
     </div>
@@ -16,12 +16,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Navigation',
 
-  computed: mapGetters(['loggedIn']),
+  computed: {
+    ...mapState({
+      user: state => state.user,
+      loggedIn: state => state.loggedIn,
+    })
+    // mapGetters(['loggedIn']),
+  },
 
   methods: {
     logout () {
@@ -41,7 +48,7 @@ export default {
   top: 0px;
   width: 100vw;
   background: linear-gradient(to bottom, #fefeff, #ffffff00);
-  height: 16vh;
+  height: 12vh;
   z-index: 100;
 }
 

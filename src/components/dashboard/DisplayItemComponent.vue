@@ -1,16 +1,16 @@
 <template>
-  <div v-if="$store.state.menuItems" class="container">
-    <li class="item" v-for="item in $store.state.menuItems"
+  <div v-if="menuItems" class="container">
+    <li class="item" v-for="item in menuItems"
         v-bind:key="item._id">
       <h3 class="title">{{ item.title }}</h3>
       <p class="description">{{ item.description }}</p>
       <h4 class="price">${{ item.price }}</h4>
       <p class="categorie">{{ item.categorie }}</p>
       <div class="hide">
-        <Button class="liButton" @click="removeMenuItem(item._id)"
+        <Button class="liButton" @click="removeMenuItem(item)"
                 color="red"
                 text="Remove"/>
-        <Button class="liButton" @click="getMenuItem(item._id)"
+        <Button class="liButton" @click="getMenuItem(item)"
                 color="green"
                 text="Edit"/>
       </div>
@@ -20,8 +20,6 @@
 </template>
 
 <script>
-// import { mapActions } from 'vuex'
-import MenuService from '@/menuService.js'
 import Button from '@/components/Button.vue'
 
 export default {
@@ -31,31 +29,24 @@ export default {
     Button,
   },
 
-  methods: {
-    // ...mapActions([
-    //   'fetchMenu'
-    // ]),
-
-    async deleteItem(id) {
-      await MenuService.deleteMenuItem(id);
-      await this.fetchMenu();
-    },
-
-    removeMenuItem(menuItemId) {
-      this.$store.
-        dispatch('removeMenuItem', menuItemId);
-    },
-
-    async getMenuItem(menuItemId) {
-      await this.$store.
-        dispatch('getMenuItem', menuItemId);
-        this.$store.state.showEditItem = !this.$store.state.showEditItem
+  computed: {
+    menuItems () {
+      return this.$store.state.menuItems
     }
   },
 
-  // created() {
-  //   this.fetchMenu();
-  // },
+  methods: {
+    removeMenuItem(item) {
+      this.$store.
+        dispatch('removeMenuItem', item);
+    },
+
+    async getMenuItem(item) {
+      await this.$store.
+        dispatch('getMenuItem', item);
+        this.$store.state.showEditItem = !this.$store.state.showEditItem
+    }
+  },
 
   emits: ['edit-item']
 }

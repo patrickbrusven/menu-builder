@@ -2,7 +2,7 @@
     <form class="loginForm" @submit.prevent="login">
       <input v-model="email" type="email" name="email" placeholder="Email...">
       <input v-model="password" type="password" name="password" placeholder="Password...">
-      <ErrorComponent v-if="$store.state.error"
+      <ErrorComponent v-if="error"
                       text="Error Logging in..." />
       <div class="bottomLine">
         <router-link to="/register">
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ErrorComponent from '@/components/Error.vue'
 
 export default {
@@ -28,6 +29,16 @@ export default {
       email: '',
       password: ''
     }
+  },
+
+  computed: {
+    ...mapState({
+      error: state => state.error,
+      // loggedIn: state => state.loggedIn,
+    })
+    // error () {
+    //   return this.$store.state.error
+    // }
   },
 
   methods: {
@@ -49,6 +60,12 @@ export default {
         })
     }
   },
+
+  // created() {
+  //   if (this.$store.state.loggedIn) {
+  //     this.$router.push({ name: 'dashboard'})
+  //   }
+  // }
 }
 </script>
 

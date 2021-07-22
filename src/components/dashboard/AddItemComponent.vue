@@ -29,6 +29,7 @@ export default {
     createNewItem() {
       this.$store.
         dispatch('newMenuItem', {
+          menuId: this.$store.state.menu._id,
           title: this.title,
           description: this.description,
           price: this.price,
