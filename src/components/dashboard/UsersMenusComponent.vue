@@ -62,6 +62,9 @@ export default {
     },
 
     chooseMenu(menuId) {
+      if (this.$store.state.error) {
+        this.$store.state.error = false;
+      }
       this.$store.dispatch('getMenu', menuId)
     },
 

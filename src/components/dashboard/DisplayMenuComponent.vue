@@ -1,15 +1,19 @@
 <template lang="html">
-  <div v-if="menu" class="menuDisplay">
+  <div v-if="menu && !error" class="menuDisplay">
     <DisplayItemComponent @edit-item="editItem" />
     <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="showEditItem" :menuItemId="menuItemId" />
   </div>
-  <div v-else>
-    <h3> This instead of Menu </h3>
+  <div v-else-if="!menu && !error">
+    <h3>This instead of Menu</h3>
+  </div>
+  <div v-else-if="error">
+    <h3>You deleted all menuItems in this menu</h3>
   </div>
 </template>
 
 <script>
 // import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import DisplayItemComponent from '@/components/dashboard/DisplayItemComponent.vue'
 import UpdateItemComponent from '@/components/dashboard/UpdateItemComponent.vue'
 
@@ -30,13 +34,19 @@ export default {
   },
 
   computed: {
-    menu () {
-      return this.$store.state.menu
-    },
-
-    showEditItem () {
-      return this.$store.state.showEditItem
-    }
+    ...mapState({
+      menu: state => state.menu,
+      showEditItem: state => state.showEditItem,
+      error: state => state.error,
+      errorMessage: state => state.errorMessage,
+    })
+    // menu () {
+    //   return this.$store.state.menu
+    // },
+    //
+    // showEditItem () {
+    //   return this.$store.state.showEditItem
+    // },
   },
 
   methods: {

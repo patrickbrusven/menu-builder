@@ -65,17 +65,6 @@ export default createStore({
         })
     },
 
-
-    // old way
-    // async login ({ commit }, credentials) {
-    //   await this.fetchMenu;
-    //   return axios
-    //     .post('//localhost:5000/api/login', credentials)
-    //     .then(({ data }) => {
-    //       commit('SET_USER_DATA', data)
-    //     })
-    // },
-
     async login ({ commit, dispatch }, credentials) {
       return axios
         .post('api/login', credentials)
@@ -92,26 +81,10 @@ export default createStore({
       commit('LOGOUT')
     },
 
-    // async pageRefresh ({ commit }) {
-    //   const userString = localStorage.getItem('user')
-    //   const token = JSON.parse(userString)
-    //   const { data } = await RefreshUserService.getUserByToken(token);
-    //   data
-    //     .then( res => {
-    //
-    //     })
-    //     .catch( err => {
-    //
-    //     });
-    //
-    //   commit('SET_USER_DATA', data);
-    // },
-
     async pageRefresh ({ commit, dispatch }) {
       const userString = localStorage.getItem('user')
       const token = JSON.parse(userString)
       const { data } = await RefreshUserService.getUserByToken(token);
-      // console.log(data._id);
       commit('SET_USER_DATA', data);
       dispatch('getUsersMenus', data._id);
     },
@@ -130,7 +103,6 @@ export default createStore({
     },
 
     async removeMenuItem({ dispatch }, item) {
-      // const menuId = this.state.menu._id
       const menuId = item.owner
       const menuItemId = item._id
 
@@ -139,16 +111,26 @@ export default createStore({
     },
 
     async getUsersMenus({ commit }, userId) {
-      // const userId = this.state.user._id
       const { data } = await UsersService.getUsersMenus(userId);
       commit('SET_USERS_MENUS', data);
     },
 
     async getMenu({ commit, dispatch }, menuId) {
-      const { data } = await MenuService.getMenu(menuId);
-      commit('SET_USERS_MENU', data);
-      dispatch('getUsersMenuItems', menuId);
+      await MenuService.getMenu(menuId)
+        .then(({ data }) => {
+          commit('SET_USERS_MENU', data);
+          dispatch('getUsersMenuItems', menuId);
+        })
+        .catch(({ response }) => {
+          commit('SET_ERROR_DATA', response.data)
+        });
     },
+
+    // async getMenu({ commit, dispatch }, menuId) {
+    //   const { data } = await MenuService.getMenu(menuId);
+    //   commit('SET_USERS_MENU', data);
+    //   dispatch('getUsersMenuItems', menuId);
+    // },
 
     async newMenuItem({ dispatch }, newItem) {
       const menuId = newItem.menuId
@@ -157,13 +139,23 @@ export default createStore({
     },
 
     async getUsersMenuItems({ commit }, menuId) {
-      // const menuId = this.state.menu._id
-      const { data } = await MenuService.getMenuItems(menuId);
-      commit('SET_MENU_ITEMS', data);
+      await MenuService.getMenuItems(menuId)
+          .then(({ data }) => {
+            commit('SET_MENU_ITEMS', data);
+          })
+          .catch(({ response }) => {
+            console.log("i'm triggered in getMenuItems")
+            commit('SET_ERROR_DATA', response.data)
+          });
     },
 
+    // async getUsersMenuItems({ commit }, menuId) {
+    //   // const menuId = this.state.menu._id
+    //   const { data } = await MenuService.getMenuItems(menuId);
+    //   commit('SET_MENU_ITEMS', data);
+    // },
+
     async getMenuItem({ commit },  item) {
-      // const menuId = this.state.menu._id
       const menuId = item.owner
       const menuItemId = item._id
       const { data } = await MenuService.getMenuItem(menuId, menuItemId);
@@ -171,8 +163,6 @@ export default createStore({
     },
 
     async updateMenuItem({ dispatch }, updatedItem) {
-      // const menuId = this.state.menu._id
-      // const menuItemId = this.state.menuItem._id
       const menuId = updatedItem.owner
       const menuItemId = updatedItem._id
       await MenuService.updateMenuItem(menuId, menuItemId, updatedItem);

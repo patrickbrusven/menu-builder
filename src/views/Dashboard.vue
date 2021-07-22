@@ -2,7 +2,7 @@
   <div class="dashboard">
     <UsersMenusComponent />
     <div class="container">
-      <div v-if="!menu" class="">
+      <div v-if="!menu || error" class="">
         <h3>Choose a menu to edit</h3>
       </div>
       <div v-else class="">
@@ -45,6 +45,7 @@ export default {
       menu: state => state.menu,
       restaurant: state => state.menu.restaurant,
       showAddItem: state => state.showAddItem,
+      error: state => state.error,
     })
   },
 
