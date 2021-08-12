@@ -38,7 +38,8 @@ export default {
   },
 
   created () {
-    const userString = localStorage.getItem('user') // handle page refresh by checking local storage
+    //const userString = localStorage.getItem('user') // handle page refresh by checking local storage
+    const userString = sessionStorage.getItem('user') // handle page refresh by checking session storage
     if (userString) {
       this.$store.dispatch('pageRefresh') // restore user data with Vuex
     }

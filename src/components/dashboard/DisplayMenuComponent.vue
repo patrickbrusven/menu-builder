@@ -58,7 +58,7 @@ export default {
         this.$store.state.showAddItem = !this.$store.state.showAddItem;
       }
     },
-
+    // do this rather than above, try to reach locally for toggle of accordian rather than state
     toggleShow() {
       this.showEditItem = !this.showEditItem;
     },

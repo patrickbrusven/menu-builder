@@ -42,14 +42,14 @@ export default createStore({
     SET_USER_DATA (state, userData) {
       state.loggedIn = true
       state.user = userData
-      localStorage.setItem('user', JSON.stringify(userData.token))
+      sessionStorage.setItem('user', JSON.stringify(userData.token))
       axios.defaults.headers.common['auth-token'] = `${
         userData.token
         }`
     },
 
     LOGOUT () {
-      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
       location.reload()
     },
   },
@@ -82,7 +82,7 @@ export default createStore({
     },
 
     async pageRefresh ({ commit, dispatch }) {
-      const userString = localStorage.getItem('user')
+      const userString = sessionStorage.getItem('user')
       const token = JSON.parse(userString)
       const { data } = await RefreshUserService.getUserByToken(token);
       commit('SET_USER_DATA', data);
@@ -125,12 +125,6 @@ export default createStore({
           commit('SET_ERROR_DATA', response.data)
         });
     },
-
-    // async getMenu({ commit, dispatch }, menuId) {
-    //   const { data } = await MenuService.getMenu(menuId);
-    //   commit('SET_USERS_MENU', data);
-    //   dispatch('getUsersMenuItems', menuId);
-    // },
 
     async newMenuItem({ dispatch }, newItem) {
       const menuId = newItem.menuId

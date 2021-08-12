@@ -33,14 +33,27 @@ const router = createRouter({
   routes
 })
 
+// router.beforeEach((to, from, next) => {
+//   const loggedIn = localStorage.getItem('user')
+//   if (to.name == 'login' && loggedIn) next({name: 'dashboard'})
+//   else next()
+// })
+
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem('user')
+  const loggedIn = sessionStorage.getItem('user')
   if (to.name == 'login' && loggedIn) next({name: 'dashboard'})
   else next()
 })
 
+// router.beforeEach((to, from, next) => {
+//   const loggedIn = localStorage.getItem('user')
+//   if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
+//     next('/')
+//   } else {
+//     next()
+//   }
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem('user')
+  const loggedIn = sessionStorage.getItem('user')
   if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
     next('/')
   } else {
