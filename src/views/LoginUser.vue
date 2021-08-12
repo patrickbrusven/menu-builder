@@ -1,7 +1,20 @@
 <template lang="html">
     <form class="loginForm" @submit.prevent="login">
-      <input v-model="email" type="email" name="email" placeholder="Email...">
-      <input v-model="password" type="password" name="password" placeholder="Password...">
+      <div class="formInput">
+        <label class="inputField" for="email">
+          Email:
+          <input v-model="email" type="email" name="email" placeholder="Email...">
+        </label>
+        <span v-if="v$.email.$error"> {{ v$.email.$errors[0].$message }}</span>
+      </div>
+      <div class="formInput">
+        <label class="inputField" for="password">
+          Password:
+          <input v-model="password" type="password" name="password" placeholder="Password...">
+        </label>
+        <span v-if="v$.password.$error"> {{ v$.password.$errors[0].$message }}</span>
+      </div>
+      
       <ErrorComponent v-if="error"
                       text="Error Logging in..." />
       <div class="bottomLine">
@@ -16,6 +29,8 @@
 </template>
 
 <script>
+import useValidate from '@vuelidate/core'
+import { required, email, minLength } from '@vuelidate/validators'
 import { mapState } from 'vuex'
 import ErrorComponent from '@/components/Error.vue'
 
@@ -26,8 +41,16 @@ export default {
 
   data () {
     return {
+      v$: useValidate(),
       email: '',
       password: ''
+    }
+  },
+
+  validations () {
+    return {
+      email: { required, email },
+      password: { required, minLength: minLength(6) }
     }
   },
 
@@ -43,21 +66,27 @@ export default {
 
   methods: {
     login () {
-      if (this.$store.state.error) {
-        this.$store.state.error = !this.$store.state.error;
-        this.$store.state.error = '';
-      }
-      this.$store
-        .dispatch('login', {
-          email: this.email,
-          password: this.password
-        }).then(() => {
+
+      this.v$.$validate()
+      if( !this.v$.$error ) {
+        this.$store
+          .dispatch('login', {
+            email: this.email,
+            password: this.password
+          }).then(() => {
+            if (this.$store.state.error) {
+              return
+            } else {
+              this.$router.push({ name: 'dashboard' })
+            }
+          })
           if (this.$store.state.error) {
-            return
-          } else {
-            this.$router.push({ name: 'dashboard' })
+            this.$store.state.error = !this.$store.state.error;
+            this.$store.state.error = '';
           }
-        })
+      } else {
+        return
+      }
     }
   },
 
@@ -85,6 +114,25 @@ export default {
   justify-content: space-between;
 }
 
+.formInput {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputField {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+label {
+  /* width: 100%; */
+}
+
+span {
+  display: block;
+}
+
 input {
   margin: 5px;
   border-radius: 5px;
@@ -96,6 +144,7 @@ input {
   font: inherit;
   font-weight: bold;
   color: white;
+  width: inherit;
 }
 
 input:hover {
