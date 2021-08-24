@@ -1,55 +1,50 @@
 <template lang="html">
-  <div class="add-item">
-    <label for="add-item">Add a menu item below</label>
-    <input type="text" id="add-item" v-model="title" placeholder="item title...">
-    <input type="text" id="add-description" v-model="description" placeholder="item description...">
-    <input type="text" id="add-price" v-model="price" placeholder="item $price...">
-    <input type="text" id="add-categorie" v-model="categorie" placeholder="item categorie...">
+  <div class="add-menu">
+    <label>Start a new menu</label>
+    <input type="text" id="add-menu" v-model="menuTitle" placeholder="menu name...">
     <div class="bottomLine">
-      <label for="add-item">Add something delicious</label>
-      <button @click="createNewItem">Submit</button>
+      <label>Add a new menu</label>
+      <button @click="createNewMenu()">Submit</button>
     </div>
   </div>
+
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  name: 'AddItemComponent',
+  name: 'AddMenuComponent',
 
   data() {
     return {
-      title: '',
-      description: '',
-      price: '',
-      categorie: '',
+      menuTitle: '',
     }
   },
 
+  computed: {
+    ...mapState({
+      userId: state => state.user._id,
+    })
+  },
+
   methods: {
-    createNewItem() {
+    createNewMenu() {
       this.$store.
-        dispatch('newMenuItem', {
-          menuId: this.$store.state.menu._id,
-          title: this.title,
-          description: this.description,
-          price: this.price,
-          categorie: this.categorie,
-          })
-
-      this.title = ''
-      this.description = ''
-      this.price = ''
-      this.categorie = ''
-
+      dispatch('addMenu', {
+        userId: this.userId,
+        restaurant: this.menuTitle
+        })
+      this.menuTitle = '';
       this.$emit('hide-me');
-    }
+    },
   },
 }
 </script>
 
 <style lang="css" scoped>
 
-.add-item {
+.add-menu {
   background-color: #ffffff;
   display: flex;
   flex-direction: column;

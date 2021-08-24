@@ -8,9 +8,9 @@
       <div v-else class="">
         <h3>Currently building {{ restaurant }}</h3>
         <Button class="addItem" @click="toggleAddItem()"
-        :color="showAddItem ? 'red' : '#0070fc'"
-        :text="showAddItem ? 'Close' : 'Add Item'" />
-        <AddItemComponent v-show="showAddItem" class="showAddItem" />
+        :color="addItem ? 'red' : '#0070fc'"
+        :text="addItem ? 'Close' : 'Add Item'" />
+        <AddItemComponent v-show="addItem" @hide-me="toggleAddItem()" class="showAddItem" />
       </div>
     </div>
     <DisplayMenuComponent />
@@ -51,7 +51,7 @@ export default {
 
   methods: {
     toggleAddItem() {
-      this.$store.state.showAddItem = !this.$store.state.showAddItem;
+      this.addItem = !this.addItem;
     },
   },
 }

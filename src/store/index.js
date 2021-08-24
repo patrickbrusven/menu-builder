@@ -10,11 +10,11 @@ export default createStore({
     errorMessage: '',
     loggedIn: false,
     user: null,
-    menus: null,
+    menus: [],
     menu: null,
     menuItems: null,
     menuItem: null,
-    showAddMenu: false,
+    // showAddMenu: false,
     showAddItem: false,
     showEditItem: false,
   },
@@ -163,6 +163,7 @@ export default createStore({
       dispatch('getUsersMenuItems', menuId);
     }
   },
+
   getters: {
     loggedIn (state) {
       return !!state.loggedIn
