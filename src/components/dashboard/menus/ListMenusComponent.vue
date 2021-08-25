@@ -1,20 +1,14 @@
 <template lang="html">
-  <div v-if="menus.length < 1">
-    hello
-  </div>
-  <div v-else>
-    <li  class="menu" v-for="menu in menus"
-        v-bind:key="menu._id">
-      <h3>{{ menu.restaurant }} </h3>
-      <Button class="liButton" @click="chooseMenu(menu._id)"
-              color="green"
-              text="Edit"/>
-      <Button class="liButton" @click="removeMenu(menu)"
-              color="red"
-              text="Remove"/>
-    </li>
-  </div>
-
+  <li  class="menu" v-for="menu in menus"
+      v-bind:key="menu._id">
+    <h3>{{ menu.restaurant }} </h3>
+    <Button class="liButton" @click="chooseMenu(menu._id)"
+            color="green"
+            text="Edit"/>
+    <Button class="liButton" @click="removeMenu(menu)"
+            color="red"
+            text="Remove"/>
+  </li>
 </template>
 
 <script>

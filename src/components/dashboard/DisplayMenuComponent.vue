@@ -3,12 +3,12 @@
     <DisplayItemComponent @edit-item="editItem" />
     <UpdateItemComponent class="centered" @toggle-show="toggleShow" v-if="showEditItem" :menuItemId="menuItemId" />
   </div>
-  <div v-else-if="!menu && !error">
+  <!-- <div v-else-if="!menu && !error">
     <h3>This instead of Menu</h3>
   </div>
   <div v-else-if="error">
     <h3>You deleted all menuItems in this menu</h3>
-  </div>
+  </div> -->
 </template>
 
 <script>

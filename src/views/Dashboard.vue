@@ -1,19 +1,28 @@
 <template lang="html">
   <div class="dashboard">
-    <UsersMenusComponent />
-    <div class="container">
-      <div v-if="!menu || error" class="">
-        <h3>Choose a menu to edit</h3>
+    <div class="menus">
+      <UsersMenusComponent />
+      <div v-if="menus.length < 1" class="">
+        Must create a menu to start
       </div>
-      <div v-else class="">
-        <h3>Currently building {{ restaurant }}</h3>
-        <Button class="addItem" @click="toggleAddItem()"
-        :color="addItem ? 'red' : '#0070fc'"
-        :text="addItem ? 'Close' : 'Add Item'" />
-        <AddItemComponent v-show="addItem" @hide-me="toggleAddItem()" class="showAddItem" />
+      <div v-if="menus.length > 0">
+        <div class="container">
+          <div v-if="!menu" class="">
+            <h3>Choose a menu to edit</h3>
+          </div>
+          <div v-else class="">
+            <h3>Currently building {{ restaurant }}</h3>
+            <Button class="addItem" @click="toggleAddItem()"
+            :color="addItem ? 'red' : '#0070fc'"
+            :text="addItem ? 'Close' : 'Add Item'" />
+            <AddItemComponent v-show="addItem" @hide-me="toggleAddItem()" class="showAddItem" />
+          </div>
+        </div>
       </div>
     </div>
-    <DisplayMenuComponent />
+    <div class="menuItems">
+      <DisplayMenuComponent />
+    </div>
   </div>
 </template>
 
@@ -43,6 +52,7 @@ export default {
   computed: {
     ...mapState({
       menu: state => state.menu,
+      menus: state => state.menus,
       restaurant: state => state.menu.restaurant,
       showAddItem: state => state.showAddItem,
       error: state => state.error,
