@@ -1,11 +1,11 @@
-import axios from 'axios';
-
-// const url = 'http://localhost:5000/api/';
-const url = 'api/';
-
 class RefreshUserService {
-  static getUserByToken(token) {
-    return axios.get(`${url}${token}`);
+  static parseJwt(token) {
+    try {
+      const parsedToken = JSON.parse(atob(token.split('.')[1]));
+      return parsedToken._id
+    } catch (e) {
+      return null;
+    }
   }
 }
 

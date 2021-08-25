@@ -18,6 +18,7 @@ export default createStore({
     showAddItem: false,
     showEditItem: false,
   },
+
   mutations: {
     SET_ERROR_DATA (state, errorData) {
       state.error = !state.error
@@ -39,12 +40,15 @@ export default createStore({
       state.menuItem = menuItemData
     },
 
-    SET_USER_DATA (state, userData) {
+    SET_USER_DATA (state, response) {
+      state.user = response.data
       state.loggedIn = true
-      state.user = userData
-      sessionStorage.setItem('user', JSON.stringify(userData.token))
+    },
+
+    SET_JWT (state, response) {
+      sessionStorage.setItem('user', response.headers['auth-token'])
       axios.defaults.headers.common['auth-token'] = `${
-        userData.token
+        response.headers['auth-token']
         }`
     },
 
@@ -53,40 +57,48 @@ export default createStore({
       location.reload()
     },
   },
+
   actions: {
     register ({ commit }, credentials) {
       return axios
         .post('api/register', credentials)
-        .then(({ data }) => {
-          commit('SET_USER_DATA', data)
+        .then((response) => {
+          commit('SET_USER_DATA', response)
+          commit('SET_JWT', response)
         })
         .catch(({ response }) => {
           commit('SET_ERROR_DATA', response.data)
         })
     },
 
-    async login ({ commit, dispatch }, credentials) {
+    login ({ commit, dispatch }, credentials) {
       return axios
         .post('api/login', credentials)
-        .then(({ data }) => {
-          commit('SET_USER_DATA', data)
-          dispatch('getUsersMenus', data._id)
+        .then((response) => {
+          commit('SET_USER_DATA', response)
+          commit('SET_JWT', response)
+          dispatch('getUsersMenus', response.data._id)
         })
         .catch(({ response }) => {
           commit('SET_ERROR_DATA', response.data)
         })
+    },
+
+    async pageRefresh ({ commit, dispatch  }) {
+      const userString = sessionStorage.getItem('user')
+      const userId = RefreshUserService.parseJwt(userString);
+      await UsersService.getUser(userId)
+        .then((response) => {
+          commit('SET_USER_DATA', response);
+          dispatch('getUsersMenus', userId);
+        })
+        .catch(({ response }) => {
+          commit('SET_ERROR_DATA', response.data)
+        });
     },
 
     logout ({ commit }) {
       commit('LOGOUT')
-    },
-
-    async pageRefresh ({ commit, dispatch }) {
-      const userString = sessionStorage.getItem('user')
-      const token = JSON.parse(userString)
-      const { data } = await RefreshUserService.getUserByToken(token);
-      commit('SET_USER_DATA', data);
-      dispatch('getUsersMenus', data._id);
     },
 
     async addMenu ({ dispatch }, newMenu) {
