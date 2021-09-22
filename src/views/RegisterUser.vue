@@ -1,8 +1,8 @@
 <template lang="html">
   <form class="registerForm" @submit.prevent="register">
-    <input v-model="username" type="text" name="username" placeholder="Username...">
-    <input v-model="email" type="email" name="email" placeholder="Email...">
-    <input v-model="password" type="password" name="password" placeholder="Password...">
+    <FormInput  v-model="username" type="text" name="username" placeholder="username..." label="Username" />
+    <FormInput v-model="email" type="text" name="email" placeholder="email..." label="Email"/>
+    <FormInput class="password" v-model="password" type="password" placeholder="password..." name="password" label="Password"/>
     <ErrorComponent v-if="$store.state.error"
                     text="Error Registering..." />
     <div class="bottomLine">
@@ -18,12 +18,14 @@
 
 <script>
 import ErrorComponent from '@/components/Error.vue'
+import FormInput from '@/components/ui/FormInput.vue'
 
 export default {
   name: 'RegisterUser',
 
   components: {
     ErrorComponent,
+    FormInput,
   },
 
   data () {
@@ -72,7 +74,7 @@ export default {
   justify-content: space-between;
 }
 
-input {
+/* input {
   margin: 5px;
   border-radius: 5px;
   border: none;
@@ -94,19 +96,7 @@ input:hover {
 input:active {
   box-shadow: none;
 }
-
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #e4ddeb;
-  opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #e4ddeb;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #e4ddeb;
-}
+*/
 
 button {
   color: #f0e4ec;

@@ -1,20 +1,14 @@
 <template lang="html">
     <form class="loginForm" @submit.prevent="login">
       <div class="formInput">
-        <label class="inputField" for="email">
-          Email:
-          <input v-model="email" type="email" name="email" placeholder="Email...">
-        </label>
+        <FormInput v-bind:class="{'errorPlaceholder' : v$.email.$error}" v-model="email" type="text" name="email" placeholder="email..." label="Email"/>
         <span v-if="v$.email.$error"> {{ v$.email.$errors[0].$message }}</span>
       </div>
       <div class="formInput">
-        <label class="inputField" for="password">
-          Password:
-          <input v-model="password" type="password" name="password" placeholder="Password...">
-        </label>
+        <FormInput v-bind:class="{'errorPlaceholder' : v$.password.$error}" class="password" v-model="password" type="password" placeholder="password..." name="password" label="Password"/>
         <span v-if="v$.password.$error"> {{ v$.password.$errors[0].$message }}</span>
       </div>
-      
+
       <ErrorComponent v-if="error"
                       text="Error Logging in..." />
       <div class="bottomLine">
@@ -33,10 +27,12 @@ import useValidate from '@vuelidate/core'
 import { required, email, minLength } from '@vuelidate/validators'
 import { mapState } from 'vuex'
 import ErrorComponent from '@/components/Error.vue'
+import FormInput from '@/components/ui/FormInput.vue'
 
 export default {
   components: {
     ErrorComponent,
+    FormInput,
   },
 
   data () {
@@ -57,16 +53,11 @@ export default {
   computed: {
     ...mapState({
       error: state => state.error,
-      // loggedIn: state => state.loggedIn,
     })
-    // error () {
-    //   return this.$store.state.error
-    // }
   },
 
   methods: {
     login () {
-
       this.v$.$validate()
       if( !this.v$.$error ) {
         this.$store
@@ -90,15 +81,14 @@ export default {
     }
   },
 
-  // created() {
-  //   if (this.$store.state.loggedIn) {
-  //     this.$router.push({ name: 'dashboard'})
-  //   }
-  // }
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
+
+.errorPlaceholder + .secondelement {
+  color: #ff4949;
+}
 
 .loginForm {
   margin-top: 7px;
@@ -117,58 +107,17 @@ export default {
 .formInput {
   display: flex;
   flex-direction: column;
+  min-height: 70px;
 }
 
-.inputField {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-label {
-  /* width: 100%; */
-}
 
 span {
   display: block;
+  color: #ff4949;
+  padding-left: 5px;
+  font-size: .9rem;
 }
 
-input {
-  margin: 5px;
-  border-radius: 5px;
-  border: none;
-  padding: 5px;
-  text-align: center;
-  background-color: #167afb;
-  opacity: .8;
-  font: inherit;
-  font-weight: bold;
-  color: white;
-  width: inherit;
-}
-
-input:hover {
-  transition: .2s ease-in;
-  background-color: #004aaf;
-  font-weight: bold;
-}
-
-input:active {
-  box-shadow: none;
-}
-
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #e4ddeb;
-  opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #e4ddeb;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #e4ddeb;
-}
 
 button {
   color: #f0e4ec;
