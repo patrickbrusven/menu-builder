@@ -12,15 +12,9 @@
     </div>
     <ListMenusComponent :menus="menus" />
   </div>
-  <!-- <Button @click="toggleAddMenu()"
-  :color="showAddMenu ? 'red' : '#0070fc'"
-  :text="showAddMenu ? 'Close' : 'Add Menu'" />
-  <AddMenuComponent v-show="showAddMenu" @hide-me="toggleAddMenu()" :user="user" /> -->
-  <!-- <ListMenusComponent :menus="menus" /> -->
 </template>
 
 <script>
-import Button from '@/components/Button.vue'
 import AddMenuComponent from '@/components/dashboard/menus/AddMenuComponent.vue'
 import ListMenusComponent from '@/components/dashboard/menus/ListMenusComponent.vue'
 
@@ -28,7 +22,6 @@ export default {
   name: 'UsersMenusComponent',
 
   components: {
-    Button,
     AddMenuComponent,
     ListMenusComponent,
   },
