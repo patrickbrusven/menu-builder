@@ -11,12 +11,6 @@ export default {
     text: String,
     color: String,
   },
-
-  methods: {
-    // onClick() {
-    //   console.log('helloWorld')
-    // }
-  }
 }
 </script>
 

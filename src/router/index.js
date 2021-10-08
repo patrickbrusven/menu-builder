@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 import Dashboard from '../views/Dashboard.vue'
 import RegisterUser from '../views/RegisterUser.vue'
 import LoginUser from '../views/LoginUser.vue'
@@ -8,7 +8,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: LoginUser
   },
   {
     path: '/dashboard',
@@ -33,31 +33,15 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   const loggedIn = localStorage.getItem('user')
-//   if (to.name == 'login' && loggedIn) next({name: 'dashboard'})
-//   else next()
-// })
-
 router.beforeEach((to, from, next) => {
   const loggedIn = sessionStorage.getItem('user')
-  if (to.name == 'login' && loggedIn) next({name: 'dashboard'})
-  else next()
-})
-
-// router.beforeEach((to, from, next) => {
-//   const loggedIn = localStorage.getItem('user')
-//   if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
-//     next('/')
-//   } else {
-//     next()
-//   }
-router.beforeEach((to, from, next) => {
-  const loggedIn = sessionStorage.getItem('user')
-  if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
-    next('/')
-  } else {
-    next()
+  if (to.name == 'login' && loggedIn) {
+    next({name: 'dashboard'});
+  } else if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
+    next('/');
+  }
+  else {
+    next();
   }
 })
 

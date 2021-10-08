@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// const url = 'http://localhost:5000/api/menus/';
+// configured in vue.config.js
 const url = 'api/menus/';
 
 class MenuService {

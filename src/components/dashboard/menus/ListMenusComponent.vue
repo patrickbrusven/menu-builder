@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Button from '@/components/Button.vue'
 
 export default {
@@ -22,22 +21,22 @@ export default {
     Button,
   },
 
-  computed: {
-    ...mapState({
-      menus: state => state.menus,
-    }),
-  },
+  props: [
+    'menus',
+  ],
 
   methods: {
     chooseMenu(menuId) {
-      if (this.$store.state.error) {
-        this.$store.state.error = false;
-      }
       this.$store.dispatch('getMenu', menuId)
     },
 
     removeMenu(menu) {
-      this.$store.dispatch('removeMenu', menu)
+      const promptString = `Deleting ${menu.restaurant} will remove ${menu.menuItems.length} associated menuItems are you sure?`;
+      if(confirm(promptString) === true) {
+        this.$store.dispatch('removeMenu', menu);
+      } else {
+        return
+      }
     },
   },
 }

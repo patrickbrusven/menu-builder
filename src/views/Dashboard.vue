@@ -1,86 +1,110 @@
 <template lang="html">
-  <div class="dashboard">
-    <div class="menus">
-      <UsersMenusComponent />
-      <div v-if="menus.length < 1" class="">
-        Must create a menu to start
+  <div class="container">
+
+    <div v-if="navigationCategorie === 'menus'">
+      <UsersMenusComponent :menus="menus" :user="user" :menu="menu" />
+    </div>
+
+    <div v-if="navigationCategorie === 'menuItems'">
+      <div v-if="menu">
+        <DisplayMenuComponent />
       </div>
-      <div v-if="menus.length > 0">
-        <div class="container">
-          <div v-if="!menu" class="">
-            <h3>Choose a menu to edit</h3>
-          </div>
-          <div v-else class="">
-            <h3>Currently building {{ restaurant }}</h3>
-            <Button class="addItem" @click="toggleAddItem()"
-            :color="addItem ? 'red' : '#0070fc'"
-            :text="addItem ? 'Close' : 'Add Item'" />
-            <AddItemComponent v-show="addItem" @hide-me="toggleAddItem()" class="showAddItem" />
-          </div>
-        </div>
+      <div v-else>
+        <p>Select a menu to edit</p>
+        <UsersMenusComponent :menus="menus" :user="user" />
       </div>
     </div>
-    <div class="menuItems">
-      <DisplayMenuComponent />
+
+    <div v-if="navigationCategorie === 'add'">
+      <div v-if="addMenu">
+        <AddMenuComponent :user="user" />
+      </div>
+      <div v-else>
+        <AddItemComponent :menuId="menu._id"/>
+      </div>
     </div>
+
+    <div v-if="navigationCategorie === 'restaurant'">
+      <p>Edit restaurant info</p>
+    </div>
+
   </div>
+
+  <MobileSideBarComponent :addMenu="addMenu" @click-icon="mobileNavigation" @toggle-menu="toggleMenu" />
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import UsersMenusComponent from '@/components/dashboard/UsersMenusComponent.vue'
+import AddMenuComponent from '@/components/dashboard/menus/AddMenuComponent.vue'
 import AddItemComponent from '@/components/dashboard/AddItemComponent.vue'
+import UsersMenusComponent from '@/components/dashboard/UsersMenusComponent.vue'
 import DisplayMenuComponent from '@/components/dashboard/DisplayMenuComponent.vue'
-import Button from '@/components/Button.vue'
+import MobileSideBarComponent from '@/components/dashboard/MobileSideBarComponent.vue'
 
 export default {
   name: 'Dashboard',
 
   components: {
-    UsersMenusComponent,
+    AddMenuComponent,
     AddItemComponent,
+    UsersMenusComponent,
     DisplayMenuComponent,
-    Button,
+    MobileSideBarComponent,
   },
 
   data() {
     return {
-      addItem: false,
+      navigationCategorie: 'menus',
+      restaurant: false,
+      addMenu: true,
+      windowWidth: '',
+      windowHeight: '',
     }
   },
 
   computed: {
     ...mapState({
-      menu: state => state.menu,
+      user: state => state.user,
       menus: state => state.menus,
-      restaurant: state => state.menu.restaurant,
-      showAddItem: state => state.showAddItem,
-      error: state => state.error,
+      menu: state => state.menu,
     })
   },
 
   methods: {
-    toggleAddItem() {
-      this.addItem = !this.addItem;
+    getWindowData() {
+      this.windowWidth = window.innerWidth;
+      this.windowHeight = window.innerHeight;
     },
+
+    mobileNavigation(categorie) {
+      this.navigationCategorie = categorie;
+    },
+
+    toggleMenu() {
+      this.addMenu = !this.addMenu;
+    }
   },
+
+  mounted() {
+    window.addEventListener('resize', this.getWindowData, { passive: true });
+  },
+
+  unmounted() {
+    window.removeEventListener('resize', this.getWindowData, { passive: true });
+  },
+
+  created () {
+    this.getWindowData();
+  },
+
 }
 </script>
 
 <style lang="css" scoped>
 
-  .dashboard {
+  .container {
     align-self: center;
     margin-top: 75px;
-  }
-
-  .container {
-    background-color: #fdfdfecc;
-    display: flex;
-    flex-direction: column;
-    border-radius: 5px;
-    width: 94vw;
-    align-self: center;
   }
 
   button {

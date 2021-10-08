@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import ErrorComponent from '@/components/Error.vue'
+import ErrorComponent from '@/components/ErrorComponent.vue'
 import FormInput from '@/components/ui/FormInput.vue'
 
 export default {

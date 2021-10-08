@@ -1,22 +1,19 @@
 <template>
-  <div v-if="menuItems" class="container">
-    <li class="item" v-for="item in menuItems"
-        v-bind:key="item._id">
-      <h3 class="title">{{ item.title }}</h3>
-      <p class="description">{{ item.description }}</p>
-      <h4 class="price">${{ item.price }}</h4>
-      <p class="categorie">{{ item.categorie }}</p>
-      <div class="hide">
-        <Button class="liButton" @click="removeMenuItem(item)"
-                color="red"
-                text="Remove"/>
-        <Button class="liButton" @click="getMenuItem(item)"
-                color="green"
-                text="Edit"/>
-      </div>
-    </li>
-
-  </div>
+  <li class="item" v-for="item in menuItems"
+      v-bind:key="item._id">
+    <h3 class="title">{{ item.title }}</h3>
+    <p class="description">{{ item.description }}</p>
+    <h4 class="price">${{ item.price }}</h4>
+    <p class="categorie">{{ item.categorie }}</p>
+    <div class="hide">
+      <Button class="liButton" @click="removeMenuItem(item)"
+              color="red"
+              text="Remove"/>
+      <Button class="liButton" @click="getMenuItem(item)"
+              color="green"
+              text="Edit"/>
+    </div>
+  </li>
 </template>
 
 <script>
@@ -29,11 +26,9 @@ export default {
     Button,
   },
 
-  computed: {
-    menuItems () {
-      return this.$store.state.menuItems
-    }
-  },
+  props: [
+    'menuItems'
+  ],
 
   methods: {
     removeMenuItem(item) {
@@ -44,11 +39,11 @@ export default {
     async getMenuItem(item) {
       await this.$store.
         dispatch('getMenuItem', item);
-        this.$store.state.showEditItem = !this.$store.state.showEditItem
+      this.$emit('edit-item', item._id);
     }
   },
 
-  emits: ['edit-item']
+  emits: ['edit-item'],
 }
 </script>
 

@@ -1,8 +1,8 @@
 import { createStore } from 'vuex'
-import axios from 'axios'
 import MenuService from '@/menuService.js'
 import UsersService from '@/usersService.js'
-import RefreshUserService from '@/refreshUserService.js'
+import JwtService from '@/jwtService.js'
+import AuthService from '@/authService.js'
 
 export default createStore({
   state: {
@@ -14,15 +14,12 @@ export default createStore({
     menu: null,
     menuItems: null,
     menuItem: null,
-    // showAddMenu: false,
-    showAddItem: false,
-    showEditItem: false,
   },
 
   mutations: {
     SET_ERROR_DATA (state, errorData) {
-      state.error = !state.error
-      state.errorMessage = errorData
+      state.error = true;
+      state.errorMessage = errorData;
     },
     SET_USERS_MENUS (state, menusData) {
       state.menus = menusData;
@@ -40,16 +37,9 @@ export default createStore({
       state.menuItem = menuItemData
     },
 
-    SET_USER_DATA (state, response) {
-      state.user = response.data
+    SET_USER_DATA (state, data) {
+      state.user = data
       state.loggedIn = true
-    },
-
-    SET_JWT (state, response) {
-      sessionStorage.setItem('user', response.headers['auth-token'])
-      axios.defaults.headers.common['auth-token'] = `${
-        response.headers['auth-token']
-        }`
     },
 
     LOGOUT () {
@@ -59,59 +49,74 @@ export default createStore({
   },
 
   actions: {
-    register ({ commit }, credentials) {
-      return axios
-        .post('api/register', credentials)
-        .then((response) => {
-          commit('SET_USER_DATA', response)
-          commit('SET_JWT', response)
+    async register ({ commit }, credentials) {
+      await AuthService.register(credentials)
+        .then(({ headers, data }) => {
+          const jwt = headers['auth-token'];
+          JwtService.setSessionStorage(jwt);
+          JwtService.assignHeaders(jwt);
+          commit('SET_USER_DATA', data);
         })
-        .catch(({ response }) => {
-          commit('SET_ERROR_DATA', response.data)
-        })
-    },
-
-    login ({ commit, dispatch }, credentials) {
-      return axios
-        .post('api/login', credentials)
-        .then((response) => {
-          commit('SET_USER_DATA', response)
-          commit('SET_JWT', response)
-          dispatch('getUsersMenus', response.data._id)
-        })
-        .catch(({ response }) => {
-          commit('SET_ERROR_DATA', response.data)
+        .catch(({ data }) => {
+          commit('SET_ERROR_DATA', data)
         })
     },
 
-    async pageRefresh ({ commit, dispatch  }) {
-      const userString = sessionStorage.getItem('user')
-      const userId = RefreshUserService.parseJwt(userString);
+    async login ({ commit, dispatch }, credentials) {
+      await AuthService.login(credentials)
+        .then(({ headers, data }) => {
+          const jwt = headers['auth-token'];
+          JwtService.setSessionStorage(jwt);
+          JwtService.assignHeaders(jwt);
+          dispatch('getUsersMenus', data._id);
+          commit('SET_USER_DATA', data);
+        })
+        .catch(({ data }) => {
+          commit('SET_ERROR_DATA', data);
+        })
+    },
+
+    async pageRefresh ({ commit, dispatch  }, userString) {
+      JwtService.assignHeaders(userString);
+      const userId = JwtService.parseJwt(userString);
       await UsersService.getUser(userId)
-        .then((response) => {
-          commit('SET_USER_DATA', response);
+        .then(({ data }) => {
           dispatch('getUsersMenus', userId);
+          commit('SET_USER_DATA', data);
         })
-        .catch(({ response }) => {
-          commit('SET_ERROR_DATA', response.data)
+        .catch(({ data }) => {
+          commit('SET_ERROR_DATA', data);
         });
     },
 
     logout ({ commit }) {
-      commit('LOGOUT')
+      commit('LOGOUT');
+    },
+
+    async getUser({commit}, userId) {
+      await UsersService.getUser(userId)
+        .then(({ data }) => {
+          commit('SET_USER_DATA', data);
+        }).catch(({ data }) => {
+          commit('SET_ERROR_DATA', data);
+        });
     },
 
     async addMenu ({ dispatch }, newMenu) {
       const userId = newMenu.userId
       await UsersService.newUsersMenu(userId, newMenu);
+      dispatch('getUser', userId);
       dispatch('getUsersMenus', userId);
     },
 
-    async removeMenu ({ dispatch }, menu) {
+    async removeMenu ({ dispatch, commit }, menu) {
       const menuId = menu._id
       await MenuService.removeMenu(menuId);
+      if (this.state.menu && menuId == this.state.menu._id) {
+        commit('SET_MENU_ITEMS', null);
+        commit('SET_USERS_MENU', null);
+      }
       dispatch('getUsersMenus', menu.owner);
-      dispatch('getUsersMenuItems', menuId);
     },
 
     async removeMenuItem({ dispatch }, item) {
@@ -133,8 +138,8 @@ export default createStore({
           commit('SET_USERS_MENU', data);
           dispatch('getUsersMenuItems', menuId);
         })
-        .catch(({ response }) => {
-          commit('SET_ERROR_DATA', response.data)
+        .catch(({ data }) => {
+          commit('SET_ERROR_DATA', data)
         });
     },
 
@@ -149,17 +154,10 @@ export default createStore({
           .then(({ data }) => {
             commit('SET_MENU_ITEMS', data);
           })
-          .catch(({ response }) => {
-            console.log("i'm triggered in getMenuItems")
-            commit('SET_ERROR_DATA', response.data)
+          .catch(({ data }) => {
+            commit('SET_ERROR_DATA', data)
           });
     },
-
-    // async getUsersMenuItems({ commit }, menuId) {
-    //   // const menuId = this.state.menu._id
-    //   const { data } = await MenuService.getMenuItems(menuId);
-    //   commit('SET_MENU_ITEMS', data);
-    // },
 
     async getMenuItem({ commit },  item) {
       const menuId = item.owner

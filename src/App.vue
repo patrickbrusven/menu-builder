@@ -3,21 +3,18 @@
     <Navigation />
     <img class="backgroundImage" src="@/assets/homePageBG.jpg" alt="restaurant table with menu coffee and dish"/>
     <img class="landingPageLogo" src="@/assets/logo.png" alt="main logo">
-    <!-- <ErrorComponent v-if="$store.state.error" /> -->
     <router-view/>
   </div>
 </template>
 
 <script>
 import Navigation from '@/components/Navigation.vue'
-// import ErrorComponent from '@/components/Error.vue'
 
 
 export default {
 
   components: {
     Navigation,
-    // ErrorComponent,
   },
 
   watch: {
@@ -38,10 +35,9 @@ export default {
   },
 
   created () {
-    //const userString = localStorage.getItem('user') // handle page refresh by checking local storage
-    const userString = sessionStorage.getItem('user') // handle page refresh by checking session storage
+    const userString = sessionStorage.getItem('user')
     if (userString) {
-      this.$store.dispatch('pageRefresh') // restore user data with Vuex
+      this.$store.dispatch('pageRefresh', userString);
     }
   }
 }

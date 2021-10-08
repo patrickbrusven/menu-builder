@@ -8,7 +8,8 @@
       <router-link v-if="!loggedIn" to="/register">Register</router-link>
       <router-link v-if="!loggedIn" to="/login">Login</router-link>
       <div v-else class="userStatus">
-        <h3>Welcome back: {{ user.username }}</h3>
+        <img class="profileIcon" src="@/assets/profile.svg" alt="profile icon">
+        <h3>{{ user.username }}</h3>
         <button type="button" class="logoutButton" @click="logout">Logout</button>
       </div>
     </div>
@@ -16,7 +17,6 @@
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
 import { mapState } from 'vuex'
 
 export default {
@@ -27,7 +27,6 @@ export default {
       user: state => state.user,
       loggedIn: state => state.loggedIn,
     })
-    // mapGetters(['loggedIn']),
   },
 
   methods: {
@@ -41,7 +40,7 @@ export default {
 <style scoped>
 
 #nav {
-  padding: 15px;
+  padding: 5px;
   display: flex;
   justify-content: space-between;
   position: fixed;
@@ -50,20 +49,27 @@ export default {
   background: linear-gradient(to bottom, #fefeff, #ffffff00);
   height: 12vh;
   z-index: 100;
+  align-items: center;
 }
 
 .userStatus {
   display: flex;
+  align-items: center;
+}
+
+.profileIcon {
+  height: 14px;
 }
 
 h3 {
   color: #004aaf;
-  text-decoration: underline;
-  margin-right: 10px;
+  margin: 10px;
+  font-size: .75rem;
 }
 
 #nav a {
   font-weight: bold;
+  font-size: .75rem;
   color: #f0e4ec;
   text-decoration: none;
   background-color: #0070fc;
@@ -86,14 +92,15 @@ button {
   text-decoration: none;
   background-color: #0070fc;
   padding: 5px;
-  margin-top: -5px;
+
   border-radius: 5px;
   width: min-content;
-  align-self: center;
+
   border: none;
   cursor: pointer;
   font: inherit;
   font-weight: bold;
+  font-size: .75rem;
   transition: .2s ease-in;
 }
 

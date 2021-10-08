@@ -26,7 +26,7 @@
 import useValidate from '@vuelidate/core'
 import { required, email, minLength } from '@vuelidate/validators'
 import { mapState } from 'vuex'
-import ErrorComponent from '@/components/Error.vue'
+import ErrorComponent from '@/components/ErrorComponent.vue'
 import FormInput from '@/components/ui/FormInput.vue'
 
 export default {
@@ -84,7 +84,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 
 .errorPlaceholder + .secondelement {
   color: #ff4949;

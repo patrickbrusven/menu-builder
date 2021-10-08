@@ -1,20 +1,30 @@
 <template lang="html">
   <div class="add-item">
     <label for="add-item">Add a menu item below</label>
-    <input type="text" id="add-item" v-model="title" placeholder="item title...">
-    <input type="text" id="add-description" v-model="description" placeholder="item description...">
-    <input type="text" id="add-price" v-model="price" placeholder="item $price...">
-    <input type="text" id="add-categorie" v-model="categorie" placeholder="item categorie...">
+    <FormInput v-model="title" type="text" name="title" placeholder="item title..." label="Item Title" />
+    <FormInput v-model="description" type="text" name="description" placeholder="item description..." label="Item Description" />
+    <FormInput v-model="price" type="text" name="price" placeholder="item price..." label="Item Price" />
+    <FormInput v-model="categorie" type="text" name="categorie" placeholder="item categorie..." label="Item Catigorie" />
     <div class="bottomLine">
       <label for="add-item">Add something delicious</label>
-      <button @click="createNewItem">Submit</button>
+      <button @click="createNewItem()">Submit</button>
     </div>
   </div>
 </template>
 
 <script>
+import FormInput from '@/components/ui/FormInput.vue'
+
 export default {
   name: 'AddItemComponent',
+
+  components: {
+    FormInput,
+  },
+
+  props: [
+    'menuId'
+  ],
 
   data() {
     return {
@@ -29,12 +39,12 @@ export default {
     createNewItem() {
       this.$store.
         dispatch('newMenuItem', {
-          menuId: this.$store.state.menu._id,
+          menuId: this.menuId,
           title: this.title,
           description: this.description,
           price: this.price,
           categorie: this.categorie,
-          })
+        });
 
       this.title = ''
       this.description = ''
